@@ -3500,7 +3500,7 @@ border-radius:999px!important;
     if(window.__LFS_V3)return;
     window.__LFS_V3=1;
     var D=document,F='https://i.ibb.co/4nQVZQfy/6666.png',A=[
-    ['الغلاف','https://i.ibb.co/S47Hz7pk/111.png'],['توب','https://i.ibb.co/gZsjFM0y/Top.png'],['جولي','https://i.ibb.co/HMv2tLX/3.png'],['زهور','https://i.ibb.co/v44B16Wt/4.png'],['غيد','https://i.ibb.co/DPj3BzbY/5.png'],['كيتو','https://i.ibb.co/qMY9jKQV/10.png'],['ايلافيو','https://i.ibb.co/xPR3B5M/6.png'],['ميشو','https://i.ibb.co/dw4p1c9v/8.png'],['ريما','https://i.ibb.co/rVXzY8M/7.png'],['يارا','https://i.ibb.co/MqfFWSZ/9.png'],['بصمة','https://i.ibb.co/bjL88LXT/12.png'],['صمود','https://i.ibb.co/vvJQsxLp/11.png']
+    ['الغلاف','https://i.ibb.co/S47Hz7pk/111.png'],['توب','https://i.ibb.co/gZsjFM0y/Top.png'],['جولي','https://i.ibb.co/HMv2tLX/3.png'],['زهور','https://i.ibb.co/v44B16Wt/4.png'],['غيد','https://i.ibb.co/DPj3BzbY/5.png'],['كيتو','https://i.ibb.co/N6nJLdQx/100.png'],['ايلافيو','https://i.ibb.co/xPR3B5M/6.png'],['ميشو','https://i.ibb.co/dw4p1c9v/8.png'],['ريما','https://i.ibb.co/rVXzY8M/7.png'],['يارا','https://i.ibb.co/MqfFWSZ/9.png'],['بصمة','https://i.ibb.co/bjL88LXT/12.png'],['صمود','https://i.ibb.co/vvJQsxLp/11.png']
     ],S=4300,Fd=1050,T=0;
     function q(s){
         return D.querySelector(s)

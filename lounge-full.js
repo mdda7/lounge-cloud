@@ -7,8 +7,15 @@
    - بدون تغيير مقصود في منطق الأكواد أو أسماء المتغيرات.
    ================================================== */
 
-
-
+/* ==================================================
+   ملاحظة تنظيمية
+   ==================================================
+   الأقسام التالية نُقلت إلى لوحة الشات مباشرة:
+   10) شريط الأخبار المتحرك
+   16) سلايدر صور البرواز الخارجي
+   18) همساتنا
+   19) إخراج أعضاء محددين بتوقيت معيّن
+   ================================================== */
 
 
 /* ==================================================
@@ -20,8 +27,6 @@
    ================================================== */
 $('<style>.emoi{max-height:35px!important}</style>').insertBefore("body");
 $('<style>#thStickerGrid > img:nth-child(15){display:none}</style>').insertBefore("body");
-
-
 
 /* ==================================================
    2) عداد إشعارات الفلتر
@@ -41,8 +46,6 @@ $('<style>#thStickerGrid > img:nth-child(15){display:none}</style>').insertBefor
 
 })();
 
-
-
 /* ==================================================
    3) توحيد لون حالة المستخدم
    ==================================================
@@ -55,8 +58,6 @@ $('<style>#thStickerGrid > img:nth-child(15){display:none}</style>').insertBefor
     $("<style id='loungeUnifiedUserStatusColor'></style>").html(css).appendTo("head");
 
 })();
-
-
 
 /* ==================================================
    4) تأكيد أوامر الإدارة
@@ -87,8 +88,6 @@ $('<style>#thStickerGrid > img:nth-child(15){display:none}</style>').insertBefor
     }, true);
 
 })();
-
-
 
 /* ==================================================
    5) صوت التنبيه المخصص
@@ -280,8 +279,6 @@ $('<style>#thStickerGrid > img:nth-child(15){display:none}</style>').insertBefor
 
 })();
 
-
-
 /* ==================================================
    6) اختيار لون الاسم بالكود
    ==================================================
@@ -399,8 +396,6 @@ $('<style>#thStickerGrid > img:nth-child(15){display:none}</style>').insertBefor
     });
 
 })();
-
-
 
 /* ==================================================
    7) التحكم بمنع سماع الصوت
@@ -1091,8 +1086,6 @@ $('<style>#thStickerGrid > img:nth-child(15){display:none}</style>').insertBefor
     console.log('✅ لاونج | ميزة الممنوعين من سماع صوتي جاهزة مع قائمة أسماء محمية. للفحص: __LOUNGE_BLK_DEBUG()');
 
 })();
-
-
 
 /* ==================================================
    8) الواجهة الخارجية ونافذة الدخول ومنتدى فكرة
@@ -2568,8 +2561,6 @@ margin-right:8px!important;
 
 })();
 
-
-
 /* ==================================================
    9) موسيقى الواجهة الخارجية
    ==================================================
@@ -2794,325 +2785,6 @@ filter:grayscale(.25) drop-shadow(0 2px 5px rgba(54,103,137,.12))!important;
 
 })();
 
-
-
-/* ==================================================
-   10) شريط الأخبار المتحرك
-   ==================================================
-   التعديل السريع:
-   - NEWS_MESSAGES = رسائل الشريط.
-   - SPEED = سرعة الحركة.
-   - الرسائل الفارغة لا تظهر.
-   ================================================== */
-(function () {
-    'use strict';
-    if (window.__LOUNGE_NEWS_TICKER_V153__) return;
-    window.__LOUNGE_NEWS_TICKER_V153__ = true;
-    var NEWS_MESSAGES = [
-    '   أهلا بنا في شات لاونج',
-    'عزيزتنا توب ستظل قلوبنا معك دوما',
-    ''
-    ];
-    var NEWS_EDGE_SYMBOL = '❖';
-    var NEWS_SEPARATOR = '◆';
-    var SPEED = 46;
-
-    /* بكسل في الثانية */
-
-
-    var rafId = null;
-    var resizeBound = false;
-    var retryTimer = null;
-    function cleanMessage(value) {
-        return String(value || '')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-    }
-
-    function getActiveMessages() {
-        return NEWS_MESSAGES
-        .map(cleanMessage)
-        .filter(function (message) {
-            return message.length > 0;
-
-        });
-
-    }
-
-    function escapeHtml(value) {
-        return String(value || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-
-    }
-
-    function buildSingleMessageHtml(message) {
-        return '' +
-        '<span class="lounge-news-edge-v153">' + escapeHtml(NEWS_EDGE_SYMBOL) + '</span>' +
-        '<span class="lounge-news-text-v153">' + escapeHtml(message) + '</span>' +
-        '<span class="lounge-news-edge-v153">' + escapeHtml(NEWS_EDGE_SYMBOL) + '</span>';
-
-    }
-
-    function buildNewsHtml() {
-        var messages = getActiveMessages();
-        return messages.map(function (message, index) {
-            var html = buildSingleMessageHtml(message);
-            if (index < messages.length - 1) {
-                html +=
-                '<span class="lounge-news-separator-v153">' +
-                escapeHtml(NEWS_SEPARATOR) +
-                '</span>';
-
-            }
-
-            return html;
-
-        }).join('');
-
-    }
-
-    function getCanvas() {
-        return document.getElementById('loungeDesignCanvasV13');
-
-    }
-
-    function isLoginPage() {
-        return ['#l1', '#l2', '#l3'].some(function (selector) {
-            var box = document.querySelector(selector);
-            return box && !!box.querySelector('input,button');
-
-        });
-
-    }
-
-    function injectTickerStyle() {
-        if (document.getElementById('loungeNewsTickerStyleV153')) return;
-        var css = `
-<style id="loungeNewsTickerStyleV153">
-#loungeDesignCanvasV13{
---lounge-news-left:8.518519%;
---lounge-news-top:63.860000%;
---lounge-news-width:82.962963%;
---lounge-news-height:3.100000%;
-}
-#loungeNewsTickerV153{
-position:absolute!important;
-left:var(--lounge-news-left)!important;
-top:var(--lounge-news-top)!important;
-width:var(--lounge-news-width)!important;
-height:var(--lounge-news-height)!important;
-z-index:3!important;
-overflow:hidden!important;
-box-sizing:border-box!important;
-pointer-events:none!important;
-direction:rtl!important;
-background:transparent!important;
-border:0!important;
-display:flex!important;
-align-items:center!important;
-justify-content:center!important;
-}
-#loungeNewsTickerV153 .lounge-news-viewport-v153{
-position:relative!important;
-width:100%!important;
-height:100%!important;
-overflow:hidden!important;
-direction:rtl!important;
-}
-#loungeNewsTickerV153 .lounge-news-track-v153{
-position:absolute!important;
-top:50%!important;
-left:0!important;
-width:max-content!important;
-min-width:max-content!important;
-white-space:nowrap!important;
-will-change:transform!important;
-transform:translate3d(-100%,-50%,0);
-}
-#loungeNewsTickerV153 .lounge-news-text-v153{
-display:inline-block!important;
-white-space:nowrap!important;
-color:#357fad!important;
-font-size:clamp(12px,3.3vw,17px)!important;
-font-weight:900!important;
-line-height:1.35!important;
-letter-spacing:.1px!important;
-text-shadow:0 1px 0 rgba(255,255,255,.90),0 2px 6px rgba(65,126,165,.13)!important;
-padding:0 6px!important;
-}
-#loungeNewsTickerV153 .lounge-news-edge-v153{
-display:inline-block!important;
-white-space:nowrap!important;
-color:#c99b42!important;
-font-size:clamp(13px,3.5vw,18px)!important;
-font-weight:900!important;
-line-height:1.35!important;
-padding:0 4px!important;
-text-shadow:0 1px 0 rgba(255,255,255,.90),0 0 6px rgba(201,155,66,.30)!important;
-}
-#loungeNewsTickerV153 .lounge-news-separator-v153{
-display:inline-block!important;
-white-space:nowrap!important;
-color:#4d94c4!important;
-font-size:clamp(13px,3.5vw,18px)!important;
-font-weight:900!important;
-line-height:1.35!important;
-padding:0 12px!important;
-text-shadow:0 1px 0 rgba(255,255,255,.90),0 0 6px rgba(77,148,196,.18)!important;
-}
-@media(max-width:520px){
-#loungeNewsTickerV153 .lounge-news-text-v153{
-font-size:clamp(12px,3.6vw,15px)!important;
-padding:0 5px!important;
-}
-#loungeNewsTickerV153 .lounge-news-edge-v153,
-#loungeNewsTickerV153 .lounge-news-separator-v153{
-font-size:clamp(13px,3.8vw,16px)!important;
-}
-#loungeNewsTickerV153 .lounge-news-separator-v153{
-padding:0 10px!important;
-}
-}
-</style>`;
-        document.head.insertAdjacentHTML('beforeend', css);
-
-    }
-
-    function stopTicker() {
-        if (rafId) {
-            cancelAnimationFrame(rafId);
-            rafId = null;
-
-        }
-
-        if (retryTimer) {
-            clearTimeout(retryTimer);
-            retryTimer = null;
-
-        }
-
-
-    }
-
-    function ensureTickerElement() {
-        var canvas = getCanvas();
-        if (!canvas || !isLoginPage()) {
-            stopTicker();
-            return null;
-
-        }
-
-        var newsHtml = buildNewsHtml();
-        if (!newsHtml) {
-            stopTicker();
-            return null;
-
-        }
-
-        injectTickerStyle();
-        var ticker = document.getElementById('loungeNewsTickerV153');
-        if (!ticker) {
-            ticker = document.createElement('div');
-            ticker.id = 'loungeNewsTickerV153';
-            ticker.setAttribute('aria-hidden', 'true');
-            ticker.innerHTML =
-            '<div class="lounge-news-viewport-v153" id="loungeNewsViewportV153">' +
-            '<div class="lounge-news-track-v153" id="loungeNewsTrackV153">' +
-            newsHtml +
-            '</div>' +
-            '</div>';
-            canvas.appendChild(ticker);
-
-        }
-         else {
-            var existingTrack = document.getElementById('loungeNewsTrackV153');
-            if (existingTrack) existingTrack.innerHTML = newsHtml;
-
-        }
-
-        return ticker;
-
-    }
-
-    function startTicker() {
-        var ticker = ensureTickerElement();
-        if (!ticker) return;
-        var viewport = document.getElementById('loungeNewsViewportV153');
-        var track = document.getElementById('loungeNewsTrackV153');
-        if (!viewport || !track) return;
-        stopTicker();
-        var viewportWidth = Math.ceil(viewport.clientWidth || 0);
-        var trackWidth = Math.ceil(track.offsetWidth || 0);
-        if (!viewportWidth || !trackWidth) {
-            retryTimer = setTimeout(startTicker, 80);
-            return;
-
-        }
-
-        var startX = -trackWidth + 18;
-
-        /* تقليل فراغ البداية ليظهر الشريط أسرع */
-
-
-        var endX = viewportWidth;
-        var x = startX;
-        var lastTs = null;
-        track.style.transform = 'translate3d(' + x + 'px,-50%,0)';
-        function step(ts) {
-            if (!document.getElementById('loungeNewsTickerV153') || !getCanvas() || !isLoginPage()) {
-                stopTicker();
-                return;
-
-            }
-
-            if (lastTs === null) lastTs = ts;
-            var dt = Math.min((ts - lastTs) / 1000, 0.08);
-            lastTs = ts;
-            x += SPEED * dt;
-            if (x > endX) {
-                x = startX;
-
-            }
-
-            track.style.transform = 'translate3d(' + x + 'px,-50%,0)';
-            rafId = requestAnimationFrame(step);
-
-        }
-
-        rafId = requestAnimationFrame(step);
-        if (!resizeBound) {
-            resizeBound = true;
-            window.addEventListener('resize', function () {
-                setTimeout(startTicker, 80);
-
-            });
-
-        }
-
-
-    }
-
-    function initTicker() {
-        ensureTickerElement();
-        startTicker();
-
-    }
-
-    initTicker();
-    document.addEventListener('DOMContentLoaded', initTicker);
-    window.addEventListener('load', initTicker);
-    setTimeout(initTicker, 60);
-    setTimeout(initTicker, 180);
-    setTimeout(initTicker, 400);
-
-})();
-
-
-
 /* ==================================================
    11) تجميل أزرار داخلية الشات
    ==================================================
@@ -3263,8 +2935,6 @@ border-radius:999px!important;
 
 })();
 
-
-
 /* ==================================================
    13) TikTok داخل الحائط — V1.5
    ==================================================
@@ -3374,8 +3044,6 @@ border-radius:999px!important;
     })
 })();
 
-
-
 /* ==================================================
    14) تأكيد إرسال التنبيه للعضو — V6
    ==================================================
@@ -3438,8 +3106,6 @@ border-radius:999px!important;
     },true)
 })();
 
-
-
 /* ==================================================
    15) فقاعات الرسائل النصية
    ==================================================
@@ -3484,131 +3150,6 @@ border-radius:999px!important;
     })
 })();
 
-
-
-/* ==================================================
-   16) سلايدر صور البرواز الخارجي — لاونج V3
-   ==================================================
-   التعديل السريع:
-   - F = صورة البرواز.
-   - A = قائمة الصور والأسماء.
-   - S = مدة بقاء الصورة.
-   - Fd = مدة التلاشي.
-   ================================================== */
-(function(){
-    'use strict';
-    if(window.__LFS_V3)return;
-    window.__LFS_V3=1;
-    var D=document,F='https://i.ibb.co/4nQVZQfy/6666.png',A=[
-    ['الغلاف','https://i.ibb.co/S47Hz7pk/111.png'],['توب','https://i.ibb.co/gZsjFM0y/Top.png'],['جولي','https://i.ibb.co/HMv2tLX/3.png'],['زهور','https://i.ibb.co/v44B16Wt/4.png'],['غيد','https://i.ibb.co/DPj3BzbY/5.png'],['كيتو','https://i.ibb.co/N6nJLdQx/100.png'],['ايلافيو','https://i.ibb.co/xPR3B5M/6.png'],['ميشو','https://i.ibb.co/dw4p1c9v/8.png'],['ريما','https://i.ibb.co/rVXzY8M/7.png'],['يارا','https://i.ibb.co/MqfFWSZ/9.png'],['بصمة','https://i.ibb.co/bjL88LXT/12.png'],['صمود','https://i.ibb.co/vvJQsxLp/11.png']
-    ],S=4300,Fd=1050,T=0;
-    function q(s){
-        return D.querySelector(s)
-    }
-    function L(){
-        return['#l1','#l2','#l3'].some(function(s){
-            var b=q(s);
-            return b&&b.querySelector('input,button')
-        })
-    }
-    function C(){
-        return q('#loungeDesignCanvasV13')
-    }
-    var I=A.filter(function(x){
-        return x[1]
-    }),H=I.filter(function(x){
-        return x[0]=='الغلاف'
-    }),R=I.filter(function(x){
-        return x[0]!='الغلاف'
-    });
-    for(var i=R.length-1;
-    i>0;
-    i--){
-        var j=Math.floor(Math.random()*(i+1)),t=R[i];
-        R[i]=R[j];
-        R[j]=t
-    }
-    I=H.concat(R);
-    function pre(){
-        I.concat([['',F]]).forEach(function(x){
-            var im=new Image;
-            im.src=x[1]
-        })
-    }
-    function css(){
-        if(q('#lfsCssV3'))return;
-        var s=D.createElement('style');
-        s.id='lfsCssV3';
-        s.textContent='#lfsW{position:absolute!important;left:3.333333%!important;top:46.212121%!important;width:50%!important;height:13.368984%!important;z-index:3!important;pointer-events:none!important;overflow:visible!important;box-sizing:border-box!important}#lfs{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;overflow:visible!important}#lfs .c{position:absolute!important;left:2.4%!important;top:5%!important;width:95.2%!important;height:90%!important;overflow:hidden!important;border-radius:10px!important;z-index:1!important}#lfs .p{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;opacity:0!important;transition:opacity '+Fd+'ms ease-in-out!important;filter:saturate(1.04) contrast(1.02) brightness(1.02)!important}#lfs .p.on{opacity:1!important}#lfs .p.k{animation:lfsKb '+(S+Fd)+'ms ease-in-out forwards!important}@keyframes lfsKb{0%{transform:scale(1.06) translate(0,0)}100%{transform:scale(1.01) translate(-1.5%,-1%)}}#lfs .f{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:fill!important;z-index:4!important;user-select:none!important;-webkit-user-drag:none!important}body:not(.lounge-unified-v12) #lfsW,body.lounge-login-modal-open-v12 #lfsW{display:none!important}';
-        D.head.appendChild(s)
-    }
-    function clean(){
-        if(T)clearInterval(T),T=0;
-        ['loungeFrameSliderWrapV29','loungeFrameSliderV29','lfsW'].forEach(function(id){
-            var e=q('#'+id);
-            if(e)e.remove()
-        });
-        ['loungeFrameSliderStyleV29','lfsCssV3'].forEach(function(id){
-            var e=q('#'+id);
-            if(e)e.remove()
-        })
-    }
-    function kb(e){
-        e.classList.remove('k');
-        void e.offsetWidth;
-        e.classList.add('k')
-    }
-    function build(){
-        var c=C();
-        if(!c||!L()||!I.length)return;
-        if(q('#lfsW'))return;
-        clean();
-        css();
-        var w=D.createElement('div');
-        w.id='lfsW';
-        w.innerHTML='<div id="lfs"><div class="c"><img class="p p1"><img class="p p2"></div><img class="f" src="'+F+'"></div>';
-        c.appendChild(w);
-        var p1=q('#lfs .p1'),p2=q('#lfs .p2'),a=p1,b=p2,n=1;
-        p1.src=I[0][1];
-        kb(p1);
-        p1.classList.add('on');
-        function sw(){
-            if(!q('#lfsW')){
-                if(T)clearInterval(T),T=0;
-                return
-            }
-            var it=I[n++%I.length];
-            b.onload=function(){
-                kb(b);
-                a.classList.remove('on');
-                b.classList.add('on');
-                var o=a;
-                a=b;
-                b=o;
-                b.onload=null
-            };
-            b.src=it[1]
-        }
-        if(I.length>1)T=setInterval(sw,S)
-    }
-    function init(){
-        pre();
-        build();
-        setTimeout(build,300);
-        setTimeout(build,900)
-    }
-    init();
-    D.addEventListener('DOMContentLoaded',init);
-    window.addEventListener('load',init);
-    new MutationObserver(function(){
-        if(!q('#lfsW'))build()
-    }).observe(D.documentElement,{
-        childList:1,subtree:1
-    })
-})();
-
-
-
 /* ==================================================
    17) إصلاح اختفاء آخر رسالة خلف شريط الكتابة
    ==================================================
@@ -3650,462 +3191,4 @@ border-radius:999px!important;
         applyFix();
     setInterval(applyFix, 2000);
 
-})();
-
-
-
-/* ==================================================
-   18) همساتنا — GS V5.4 safe
-   ==================================================
-   التعديل السريع:
-   - U = رابط Google Apps Script.
-   - K = رمز الربط.
-   - M = الحد الأقصى لحروف الهمسة.
-   - MIN / PC / MX = توقيت عرض الهمسات.
-   ================================================== */
-(function(){
-    'use strict';
-    if(window.__LW54)return;
-    window.__LW54=1;
-    var D=document,F='https://i.ibb.co/4nQVZQfy/6666.png',U='https://script.google.com/macros/s/AKfycbyGAPw6DukUYGhxGmSRLS7uWUNfsPFtIKP8ui9H10ACfjg1yUSqGjfUY4krJDV220WCuA/exec',K='Lounge2026',A=[],M=90,MIN=3200,PC=95,MX=9000,T=0,I=0,SD=0,SKL='__LW_LAST_USER__',SKD='__LW_LAST_DISPLAY__';
-    function q(s,r){
-        return(r||D).querySelector(s)
-    }
-    function qa(s,r){
-        return[].slice.call((r||D).querySelectorAll(s))
-    }
-    function L(){
-        return['#l1','#l2','#l3'].some(function(s){
-            var b=q(s);
-            return b&&b.querySelector('input,button')
-        })
-    }
-    function C(){
-        return q('#loungeDesignCanvasV13')
-    }
-    function x(v){
-        return String(v||'').replace(/[<>]/g,'').replace(/\s+/g,' ').trim()
-    }
-    function si(v){
-        var c=[10240,8203,8204,8205,8234,8235,8236,8237,8238,65279],s=String(v||'');
-        for(var i=0;
-        i<c.length;
-        i++)s=s.split(String.fromCharCode(c[i])).join('');
-        return s
-    }
-    function ik(v){
-        return si(x(v)).toLowerCase()
-    }
-    function su(n){
-        n=x(n);
-        if(n){
-            window.__LWU=n;
-            try{
-                sessionStorage.setItem(SKL,n)
-            }
-            catch(e){
-
-            }
-
-        }
-
-    }
-    function gu(){
-        try{
-            return x(window.__LWU||sessionStorage.getItem(SKL)||'')
-        }
-        catch(e){
-            return x(window.__LWU||'')
-        }
-
-    }
-    function gk(){
-        return ik(gu())
-    }
-    function sd(n){
-        n=x(n);
-        if(n){
-            try{
-                sessionStorage.setItem(SKD,n)
-            }
-            catch(e){
-
-            }
-
-        }
-
-    }
-    function gd(){
-        try{
-            return x(sessionStorage.getItem(SKD)||'')
-        }
-        catch(e){
-            return''
-        }
-
-    }
-    function jp(p,cb){
-        var n='lw'+Date.now()+Math.random().toString(36).slice(2),s,dn=0;
-        p.cb=n;
-        window[n]=function(r){
-            if(dn)return;
-            dn=1;
-            try{
-                cb(r||{
-
-                })
-            }
-            finally{
-                delete window[n];
-                s&&s.remove&&s.remove()
-            }
-
-        };
-        s=D.createElement('script');
-        s.src=U+(U.indexOf('?')>-1?'&':'?')+Object.keys(p).map(function(k){
-            return encodeURIComponent(k)+'='+encodeURIComponent(p[k])
-        }).join('&');
-        s.onerror=function(){
-            if(dn)return;
-            dn=1;
-            delete window[n];
-            cb({
-                ok:0,msg:'net'
-            })
-        };
-        D.body.appendChild(s);
-        setTimeout(function(){
-            if(dn)return;
-            dn=1;
-            delete window[n];
-            cb({
-                ok:0,msg:'timeout'
-            })
-        },8000)
-    }
-    function load(){
-        jp({
-            action:'list'
-        },function(r){
-            if(r&&r.ok&&r.items){
-                A=r.items;
-                rt()
-            }
-
-        })
-    }
-    function send(t,u,k,cb){
-        jp({
-            action:'add',key:K,u:u,t:t,ik:k
-        },cb)
-    }
-    function cn(e){
-        var y=e&&e.target,b;
-        if(!y)return;
-        b=y.closest&&y.closest('#l1,#l2,#l3,form,.tab-pane,.loginbox');
-        if(!b)return;
-        qa('input',b).some(function(i){
-            var t=String(i.type||'').toLowerCase(),v=x(i.value);
-            if(v&&!/password|hidden|button|submit/.test(t)){
-                su(v);
-                return 1
-            }
-
-        })
-    }
-    D.addEventListener('click',cn,1);
-    D.addEventListener('keydown',function(e){
-        if(e.key==='Enter')cn(e)
-    },1);
-    function css(){
-        if(q('#lw54css'))return;
-        var s=D.createElement('style');
-        s.id='lw54css';
-        s.textContent='#lw54{position:absolute!important;left:3.333333%!important;top:71.238895%!important;width:50%!important;height:13.368984%!important;z-index:3!important;direction:rtl!important;pointer-events:none!important;font-family:Tahoma,Arial!important}#lw54b{position:absolute!important;inset:0!important}#lw54i{position:absolute!important;left:2.4%!important;top:5%!important;width:95.2%!important;height:90%!important;overflow:hidden!important;border-radius:10px!important;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(232,246,255,.72))!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:7px 10px 14px!important;box-sizing:border-box!important}.lw54t{font-size:clamp(11px,2.9vw,15px)!important;color:#c99b42!important;font-weight:900!important;text-shadow:0 1px 0 #fff!important;margin-bottom:2px!important}.lw54x{max-width:96%!important;font-size:clamp(10px,2.7vw,14px)!important;color:#357fad!important;font-weight:900!important;line-height:1.5!important;min-height:31px!important;display:flex!important;align-items:center!important;justify-content:center!important;word-break:break-word!important;text-shadow:0 1px 0 #fff!important;opacity:1!important;transition:opacity .45s ease!important}.lw54a{font-size:clamp(9px,2.3vw,12px)!important;color:#6d93ad!important;font-weight:800!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:94%!important;opacity:1!important;transition:opacity .45s ease!important}#lw54f{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:fill!important;z-index:4!important;pointer-events:none!important}body:not(.lounge-unified-v12) #lw54,body.lounge-login-modal-open-v12 #lw54{display:none!important}#lw54btn{position:fixed!important;right:10px!important;bottom:78px!important;z-index:2147482500!important;display:none!important;direction:rtl!important;border:1px solid rgba(201,155,66,.72)!important;border-radius:999px!important;background:linear-gradient(180deg,#fff,rgba(229,244,253,.96))!important;color:#357fad!important;font-family:Tahoma,Arial!important;font-size:13px!important;font-weight:900!important;padding:7px 13px!important;box-shadow:0 4px 13px rgba(44,96,126,.20),inset 0 1px 0 #fff!important;cursor:pointer!important}body:not(.lounge-unified-v12) #lw54btn{display:block!important}#lw54m{position:fixed!important;inset:0!important;z-index:2147483900!important;background:rgba(41,72,93,.38)!important;display:none!important;align-items:center!important;justify-content:center!important;direction:rtl!important;font-family:Tahoma,Arial!important}#lw54m.o{display:flex!important}#lw54p{width:min(92vw,390px)!important;border-radius:18px!important;background:linear-gradient(180deg,#fff,#ebf7fd)!important;border:1px solid rgba(201,155,66,.62)!important;box-shadow:0 18px 55px rgba(52,103,136,.34)!important;padding:16px!important;box-sizing:border-box!important;color:#355568!important}#lw54p h3{margin:0 0 5px!important;text-align:center!important;color:#357fad!important;font-size:20px!important;font-weight:900!important}#lw54p p{margin:0 0 12px!important;text-align:center!important;color:#7b9ab0!important;font-size:12px!important;font-weight:800!important;line-height:1.8!important}.lw54in{width:100%!important;height:38px!important;margin:6px 0!important;padding:0 10px!important;box-sizing:border-box!important;border-radius:9px!important;border:1px solid rgba(87,157,201,.38)!important;background:#fff!important;color:#355568!important;outline:none!important;font-size:14px!important}#lw54ta{width:100%!important;height:88px!important;margin:6px 0!important;padding:9px 10px!important;box-sizing:border-box!important;border-radius:9px!important;border:1px solid rgba(87,157,201,.38)!important;background:#fff!important;color:#355568!important;outline:none!important;font-size:14px!important;resize:none!important;line-height:1.7!important}#lw54st{min-height:20px!important;text-align:center!important;font-size:12px!important;font-weight:900!important;color:#b06f6f!important;margin:4px 0 8px!important}.lw54ac{display:flex!important;gap:8px!important}.lw54ac button{flex:1!important;height:38px!important;border-radius:999px!important;font-size:14px!important;font-weight:900!important;cursor:pointer!important}.lw54ac button:disabled{opacity:.55!important;cursor:not-allowed!important}.lw54s{border:1px solid rgba(214,173,88,.62)!important;background:linear-gradient(180deg,#5eaddf,#3f91c9,#347fae)!important;color:#fff!important}.lw54c{border:1px solid rgba(87,157,201,.28)!important;background:linear-gradient(180deg,#fff,#edf6fb)!important;color:#4a6f86!important}@media(max-width:520px){#lw54btn{right:8px!important;bottom:72px!important;font-size:12px!important;padding:6px 11px!important}}';
-        D.head.appendChild(s)
-    }
-    function ext(){
-        var v=C();
-        if(!v||!L()||q('#lw54'))return;
-        css();
-        var z=D.createElement('div');
-        z.id='lw54';
-        z.innerHTML='<div id="lw54b"><div id="lw54i"><div class="lw54t">همساتنا</div><div class="lw54x" id="lw54x">جارٍ تحميل الهمسات...</div><div class="lw54a" id="lw54a">— همساتنا —</div></div><img id="lw54f" src="'+F+'"></div>';
-        v.appendChild(z);
-        load()
-    }
-    function btn(){
-        if(q('#lw54btn'))return;
-        css();
-        var b=D.createElement('button');
-        b.id='lw54btn';
-        b.type='button';
-        b.textContent='✦ همستي اليوم';
-        b.onclick=function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            op()
-        };
-        D.body.appendChild(b)
-    }
-    function mod(){
-        if(q('#lw54m'))return;
-        css();
-        var m=D.createElement('div');
-        m.id='lw54m';
-        m.innerHTML='<div id="lw54p"><h3>همستي اليوم</h3><p>لكل عضو همسة واحدة فقط كل يوم<br>بعد 12 الليل تقدر تكتب همسة جديدة</p><input id="lw54n" class="lw54in" placeholder="اسم الظهور"><textarea id="lw54ta" maxlength="'+M+'" placeholder="اكتب همستك هنا..."></textarea><div id="lw54st"></div><div class="lw54ac"><button id="lw54c" class="lw54c" type="button">إلغاء</button><button id="lw54s" class="lw54s" type="button">إرسال الهمسة</button></div></div>';
-        D.body.appendChild(m);
-        q('#lw54c').onclick=cls;
-        q('#lw54s').onclick=sn;
-        m.onclick=function(e){
-            if(e.target==m)cls()
-        }
-
-    }
-    function op(){
-        mod();
-        q('#lw54n').value=gd()||gu();
-        q('#lw54ta').value='';
-        st(gk()?'سيُمنع التكرار حسب حساب الدخول، حتى لو غيّرت اسم الظهور':'يفضّل تسجيل الخروج والدخول مرة أخرى لضمان منع التكرار',gk()?1:0);
-        q('#lw54m').classList.add('o');
-        setTimeout(function(){
-            q('#lw54n').focus()
-        },50)
-    }
-    function cls(){
-        var m=q('#lw54m');
-        if(m)m.classList.remove('o')
-    }
-    function st(t,o){
-        var s=q('#lw54st');
-        if(s){
-            s.textContent=t||'';
-            s.style.color=o?'#357fad':'#b06f6f'
-        }
-
-    }
-    function setS(on){
-        SD=on;
-        var b=q('#lw54s');
-        if(b)b.disabled=!!on
-    }
-    function sn(){
-        if(SD)return;
-        var u=x(q('#lw54n').value),t=x(q('#lw54ta').value),k=gk()||ik(u);
-        if(!u)return st('اكتب اسم الظهور');
-        if(!t)return st('اكتب الهمسة');
-        if(t.length>M)return st('الحد الأقصى '+M+' حرف');
-        sd(u);
-        setS(1);
-        st('جارٍ الإرسال...',1);
-        send(t,u,k,function(r){
-            setS(0);
-            var m=r&&r.msg;
-            if(r&&r.ok){
-                st(m==='pending'?'تم الإرسال بانتظار الاعتماد':'تم إرسال الهمسة',1);
-                load();
-                setTimeout(cls,700)
-            }
-            else{
-                if(m==='duplicate')st('كتبت همستك اليوم بالفعل');
-                else if(m==='bad_key')st('رمز الربط غير صحيح');
-                else if(m==='timeout'||m==='net')st('تعذر الاتصال، حاول مرة أخرى');
-                else if(m==='long')st('الهمسة طويلة');
-                else st('تعذر إرسال الهمسة الآن')
-            }
-
-        })
-    }
-    function dur(t){
-        return Math.min(MX,MIN+(t?t.length:0)*PC)
-    }
-    function show(y){
-        var t=q('#lw54x'),a=q('#lw54a');
-        if(!t||!a)return;
-        t.style.opacity=0;
-        a.style.opacity=0;
-        setTimeout(function(){
-            t.textContent=y?'“ '+y.t+' ”':'لا توجد همسات بعد...';
-            a.textContent=y?'— '+y.u+' —':'— همساتنا —';
-            t.style.opacity=1;
-            a.style.opacity=1
-        },240)
-    }
-    function step(){
-        if(T)clearTimeout(T);
-        if(A.length<=1)return;
-        T=setTimeout(function(){
-            I=(I+1)%A.length;
-            show(A[I]);
-            step()
-        },dur(A[I]&&A[I].t))
-    }
-    function rt(){
-        if(T)clearTimeout(T);
-        I=0;
-        if(!A.length)return show(null);
-        show(A[I]);
-        step()
-    }
-    function init(){
-        ext();
-        btn();
-        mod()
-    }
-    init();
-    D.addEventListener('DOMContentLoaded',init);
-    window.addEventListener('load',init);
-    setInterval(function(){
-        if(!C()||!L()){
-            var z=q('#lw54');
-            if(z)z.remove();
-            if(T)clearTimeout(T),T=0
-        }
-        else ext()
-    },1500);
-    setInterval(load,60000);
-    D.addEventListener('keydown',function(e){
-        if(e.key==='Escape')cls()
-    })
-})();
-
-
-
-/* ==================================================
-   19) إخراج أعضاء محددين بتوقيت معيّن
-   ==================================================
-   التعديل السريع:
-   - N = أسماء الأعضاء الممنوعين.
-   - S = بداية وقت المنع بالدقائق بتوقيت السعودية.
-   - E = نهاية وقت المنع بالدقائق بتوقيت السعودية.
-   أمثلة:
-   - S = 0    يعني 12:00 ليلًا.
-   - E = 360  يعني 06:00 صباحًا.
-   ملاحظة:
-   - المنع الحالي من 12 ليلًا إلى 6 صباحًا.
-   ================================================== */
-(function(){
-    'use strict';
-    if(window.__LTBK1)return;
-    window.__LTBK1=1;
-    var N=['F','تواضع شيوخ','عضو3','عضو4','عضو5'],S=0,E=360,M='الموقع تحت الصيانة الدورية حاليًا.\n\nسنعود قريبًا، شكرًا لتفهمكم.',K='__LTBK_USER__',LA=0,KS=0,d=document;
-    function c(v){
-        try{
-            return String(v||'').normalize('NFC').replace(/\s+/g,' ').trim().toLowerCase()
-        }
-        catch(e){
-            return String(v||'').replace(/\s+/g,' ').trim().toLowerCase()
-        }
-
-    }
-    function bn(n){
-        n=c(n);
-        return n&&N.some(function(x){
-            return c(x)==n
-        })
-    }
-    function tm(){
-        var p=new Intl.DateTimeFormat('en-GB',{
-            timeZone:'Asia/Riyadh',hour:'2-digit',minute:'2-digit',hour12:0
-        }).formatToParts(new Date),h=0,m=0;
-        p.forEach(function(x){
-            if(x.type=='hour')h=+x.value||0;
-            if(x.type=='minute')m=+x.value||0
-        });
-        return h*60+m
-    }
-    function it(){
-        var n=tm();
-        return S==E?0:S<E?n>=S&&n<E:n>=S||n<E
-    }
-    function vis(e){
-        if(!e)return 0;
-        var r=e.getBoundingClientRect();
-        return r.width>0&&r.height>0
-    }
-    function box(){
-        var p=[].slice.call(d.querySelectorAll('input[type="password"]')).find(vis);
-        return p?p.closest('#l2,form,.modal,.tab-pane,.panel,.loginbox'):0
-    }
-    function user(r){
-        if(!r)return'';
-        var a=[].slice.call(r.querySelectorAll('input'));
-        for(var i=0;
-        i<a.length;
-        i++){
-            var t=String(a[i].type||'').toLowerCase(),v=String(a[i].value||'').trim();
-            if(v&&!/password|hidden|button|submit/.test(t))return v
-        }
-        return''
-    }
-    function rem(n){
-        n=String(n||'').trim();
-        if(!n)return;
-        window.__LTBK_CUR=n;
-        try{
-            sessionStorage.setItem(K,n)
-        }
-        catch(e){
-
-        }
-
-    }
-    function get(){
-        try{
-            return window.__LTBK_CUR||sessionStorage.getItem(K)||''
-        }
-        catch(e){
-            return window.__LTBK_CUR||''
-        }
-
-    }
-    function out(){
-        return[].slice.call(d.querySelectorAll('button,a,.btn,.label')).find(function(e){
-            var t=String(e.innerText||e.value||'').trim(),cl=String(e.className||'');
-            return t.indexOf('تسجيل خروج')>-1||cl.indexOf('SERT')>-1
-        })
-    }
-    function stop(ev){
-        var b=box();
-        if(!b||ev&&ev.target&&!b.contains(ev.target))return;
-        var u=user(b);
-        if(u)rem(u);
-        if(!it()||!bn(u))return;
-        var n=Date.now();
-        if(n-LA<1500)return;
-        LA=n;
-        alert(M);
-        if(ev){
-            ev.preventDefault();
-            ev.stopPropagation();
-            ev.stopImmediatePropagation()
-        }
-        return!1
-    }
-    function kick(){
-        if(KS||!it()||!bn(get()))return;
-        var o=out();
-        if(!o)return;
-        KS=1;
-        alert(M);
-        setTimeout(function(){
-            try{
-                o.click()
-            }
-            catch(e){
-
-            }
-
-        },500)
-    }
-    d.addEventListener('click',function(e){
-        var x=e.target&&e.target.closest?e.target.closest('button,input[type="button"],input[type="submit"],a,.btn,[onclick]'):0;
-        if(x)stop(e)
-    },1);
-    d.addEventListener('submit',stop,1);
-    d.addEventListener('keydown',function(e){
-        if(e.key==='Enter')stop(e)
-    },1);
-    setTimeout(kick,1000);
-    setInterval(kick,5000)
 })();
